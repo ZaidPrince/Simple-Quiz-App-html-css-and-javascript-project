@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="quizapp.css">
+    <title>Document</title>
+</head>
+<body class="bg-blue-900 font-mono">
+    
+    <div class="bg-white border rounded-sm w-1/2 mx-auto mt-10 p-2 maindiv">
+        <div class="rtime text-xl font-semibold text-red-500"></div>
+        <h1 class="text-xl font-semibold font-mono border-b">Simple Quiz</h1>
+        <div class="instructions gap-2"><span class="text-lg px-2 font-medium bg-blue-900 rounded-sm text-red-500">Please read instructions before starting Quiz</span><ul class="text-sm list-disc list-inside">
+            <li>You have 4 options for each Question</li>
+            <li>Select the aswer carefully. The answer selected once cannot   changed</li>
+            <li>Press next button after solving the question. Because when   you press next you will not be able to access it again</li>
+            <li>You have only one minute to solve this quiz</li>
+            <li>When time is over the quiz will be disabled automatically</li>
+        </ul></div>
+        <div class="timeovermessage text-2xl font-semibold text-red-500"></div>
+        <div class="questionstatement"></div>
+        <div class="flex flex-col w-full gap-3 text-left options">
+            <button class="opt1 btn items-center w-full border hover:text-white hover:bg-black transition-colors flex gap-2" data-correct="true"> </button>
+            <button class="opt2 btn w-full border hover:text-white hover:bg-black transition-colors flex items-center gap-2"></button>
+            <button class="opt3 btn w-full border  hover:text-white hover:bg-black transition-colors flex items-center gap-2"></button>
+            <button class="opt4 flex items-center gap-2 btn w-full border hover:text-white hover:bg-black transition-colors"></button>
+        </div>
+        <div class="w-full flex textr">
+            <button class="border bg-blue-900 inline-block rounded-sm mx-auto mt-5 text-white button px-2">Start Quiz</button>
+
+        </div>
+    </div>
+    
+</body>
+<script>
+   
+    
+    const Questions=[
+    {Question:"Which Country invented the Paper",
+       answers:[
+       {text:`China`, correct:true},
+       {text:`Germany`, correct:false},
+       {text:`Pakistan`, correct:false},
+       {text:`Turkey`, correct:false},
+    ]} ,
+    {Question:`Hitler was born in`,
+       answers:[
+       {text:`Russia`, correct:false},
+       {text:`America`, correct:false},
+       {text:`Germany`, correct:true},
+       {text:`England`, correct:false},
+    ]}, 
+    {Question:`Biggest land animal is`,
+       answers:[
+       {text:`Giraffe`, correct:false},
+       {text:`Elephant`, correct:true},
+       {text:`Blue Whale`, correct:false},
+       {text:`Lion`, correct:false},
+    ]}, 
+    {Question:`First Governer General of Pakistan was`,
+       answers:[
+       {text:`Quaid-e-Azam Muhammad Ali Jinnah`, correct:true},
+       {text:`Chaudhary Liaqat Ali`, correct:false},
+       {text:`Chaudhary Rehmat Ali`, correct:false},
+       {text:`Zulfiqar Ali Bhutto`, correct:false},
+    ]} ,
+    {Question:`Largest river in the world is`,
+       answers:[
+       {text:`Sindh`, correct:false},
+       {text:`Amazon`, correct:false},
+       {text:`Ravi`, correct:false},
+       {text:`Nile`, correct:true},
+    ] 
+
+        
+
+        }
+    ]
+    let newtimer=true
+    let timer
+    let rtime
+   let remainingtime=10
+    const resultdiv= document.createElement('div')
+    let allowed=true
+    let marks=0
+    
+    const optionbuttons=document.querySelectorAll('.btn')
+    let n=0
+   let currentquestion;
+   const Button=document.querySelector('.button')
+   function loadquestion() {
+    Button.addEventListener('click',function (e) {
+        if (allowed) {
+            if (n<5) {
+               if (timer) {
+                clearTimeout(timer)
+               }
+               if (newtimer) {
+                displaytimer()
+                newtimer=false
+               }
+                quiztimer()
+                document.querySelector('.instructions').style.display='none'
+               
+            optionbuttons.forEach(button=>{
+        button.disabled=false
+          
+    })
+       Button.innerHTML='Next'
+       currentquestion= Questions[n]
+     document.querySelector('.questionstatement').innerHTML=`Question ${n+1}: ${currentquestion.Question}`
+     document.querySelector('.opt1').innerHTML=currentquestion.answers[0].text
+     document.querySelector('.opt2').innerHTML=currentquestion.answers[1].text
+     document.querySelector('.opt3').innerHTML=currentquestion.answers[2].text
+     document.querySelector('.opt4').innerHTML=currentquestion.answers[3].text
+     
+     n=n+1
+     
+      
+}
+ }
+ optionbuttons.forEach(botton=>{
+    botton.addEventListener('click',function (e) {
+        if(n==5){
+    n=7
+    
+    allowed=false
+    Button.innerHTML='See Result'
+   showresult()
+   
+
+}
+ 
+    })
+ })
+
+     
+   }
+  
+)
+    
+  
+   }
+loadquestion()
+   
+function userperformance() {
+    optionbuttons.forEach(botton=>{
+    
+    botton.addEventListener('click',function (e) {
+        
+        const selectedoption=e.target.innerText
+        currentquestion.answers.forEach(answer=>{
+           
+            const tik=document.createElement('img')
+    
+            if (answer.text==selectedoption) {
+               if(answer.correct){
+                marks=marks+1
+                tik.src='tik.webp'
+               tik.className="w-4 h-4"
+               
+            } 
+            if(!answer.correct){
+                tik.src='cross.webp'
+                tik.className="w-2 h-2"
+                
+            }
+            e.target.appendChild(tik)
+    
+            }
+           optionbuttons.forEach(button=>{button.disabled=true})
+          
+        })
+        
+    
+        
+    })
+    })
+    
+}
+userperformance()
+function showresult() {
+    clearTimeout(timer)
+    clearInterval(rtime)
+    remainingtime=10
+    Button.disabled=false
+    Button.addEventListener('click',function (e) {
+        if (n==7) {
+           
+            
+            Button.innerHTML='Restart'
+             document.querySelector('.timeovermessage').style.display='none'
+ document.querySelector('.questionstatement').style.display='none'
+    document.querySelector('.options').style.display='none'
+   
+    resultdiv.className='text-xl font-mono font-semibold text-blue-900'
+   resultdiv.innerHTML=`You scored ${marks} out of 5.`
+   document.querySelector('.maindiv').appendChild(resultdiv)
+   n=10
+  }
+        
+    })
+  
+    
+    
+}
+function restart() {
+      
+   Button.addEventListener('click',function (e) {
+    if (n==10) {
+   
+        
+   
+        allowed=true
+       newtimer=true
+    n=0 
+   marks=0
+   Button.disabled=false
+   document.querySelector('.questionstatement').innerHTML=''
+   optionbuttons.forEach(botton=>{
+    botton.innerHTML=''
+   })
+   document.querySelector('.questionstatement').style.display='block'
+   document.querySelector('.options').style.display='block'  
+     Button.innerHTML='Start Quiz'  
+    document.querySelector('.maindiv').removeChild(resultdiv)
+     document.querySelector('.instructions').style.display='block'
+     
+    
+   
+}
+   })
+    
+}
+restart()
+function quiztimer() {
+  
+ timer=   setTimeout(() => {
+   
+      
+        Button.disabled=true
+        optionbuttons.forEach(botton=>{
+            botton.disabled=true 
+        })
+        document.querySelector('.questionstatement').style.display='none'
+    document.querySelector('.options').style.display='none'
+        Button.innerHTML='See Result'
+       document.querySelector('.timeovermessage').innerHTML='Your time is over'
+       document.querySelector('.timeovermessage').style.display='block'
+        n=7  
+       showresult()  
+       
+    },10000);
+}
+function displaytimer() {
+    rtime=  setInterval(() => {
+        remainingtime=remainingtime-1
+        document.querySelector('.rtime').innerHTML=`Time Remaining ${remainingtime}s`
+
+        
+    }, 1000);
+     
+}
+
+
+</script>
+</html>
